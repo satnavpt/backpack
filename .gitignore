@@ -8,3 +8,5 @@ examples/data
 .coverage
 dist/*
 build/*
+.eggs
+.DS_STORE
