@@ -19,6 +19,12 @@ from torch.nn import (
     Sigmoid,
     Tanh,
     ZeroPad2d,
+    AdaptiveAvgPool1d,
+    AdaptiveAvgPool2d,
+    AdaptiveAvgPool3d,
+    BatchNorm1d,
+    BatchNorm2d,
+    BatchNorm3d,
 )
 
 from backpack.custom_module.branching import SumModule
@@ -88,6 +94,12 @@ class HBP(SecondOrderBackpropExtension):
                 SumModule: custom_module.HBPSumModule(),
                 ScaleModule: custom_module.HBPScaleModule(),
                 Identity: custom_module.HBPScaleModule(),
+                AdaptiveAvgPool1d: pooling.HBPAdaptiveAvgPoolNd(1),
+                AdaptiveAvgPool2d: pooling.HBPAdaptiveAvgPoolNd(2),
+                AdaptiveAvgPool3d: pooling.HBPAdaptiveAvgPoolNd(3),
+                BatchNorm1d: custom_module.HBPBatchNormNd(),
+                BatchNorm2d: custom_module.HBPBatchNormNd(),
+                BatchNorm3d: custom_module.HBPBatchNormNd(),
             },
         )
 
@@ -244,3 +256,8 @@ class KFLR(HBP):
             ea_strategy=ExpectationApproximation.BOTEV_MARTENS,
             savefield="kflr",
         )
+
+    def accumulate_backpropagated_quantities(
+        self, existing: Tensor, other: Tensor
+    ) -> Tensor:
+        return existing + other

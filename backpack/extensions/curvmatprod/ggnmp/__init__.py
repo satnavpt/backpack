@@ -2,6 +2,8 @@
 Matrix-free multiplication with the block-diagonal generalized Gauss-Newton/Fisher.
 """
 
+from collections.abc import Callable
+
 from torch.nn import (
     AvgPool2d,
     BatchNorm1d,
@@ -19,6 +21,7 @@ from torch.nn import (
 )
 
 from backpack.extensions.secondorder.base import SecondOrderBackpropExtension
+from backpack.custom_module.branching import SumModule
 
 from . import (
     activations,
@@ -30,6 +33,7 @@ from . import (
     losses,
     padding,
     pooling,
+    custom_module,
 )
 
 
@@ -62,5 +66,11 @@ class GGNMP(SecondOrderBackpropExtension):
                 Sigmoid: activations.GGNMPSigmoid(),
                 Tanh: activations.GGNMPTanh(),
                 BatchNorm1d: batchnorm1d.GGNMPBatchNorm1d(),
+                SumModule: custom_module.GGNMPSumModule(),
             },
         )
+
+    def accumulate_backpropagated_quantities(
+        self, existing: Callable, other: Callable
+    ) -> Callable:
+        return lambda mat: existing(mat) + other(mat)

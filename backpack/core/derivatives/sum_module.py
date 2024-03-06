@@ -1,5 +1,4 @@
 """Contains derivatives for SumModule."""
-from typing import List, Tuple
 
 from torch import Tensor
 
@@ -13,9 +12,19 @@ class SumModuleDerivatives(BaseDerivatives):
     def _jac_t_mat_prod(
         self,
         module: SumModule,
-        g_inp: Tuple[Tensor],
-        g_out: Tuple[Tensor],
+        g_inp: tuple[Tensor],
+        g_out: tuple[Tensor],
         mat: Tensor,
-        subsampling: List[int] = None,
+        subsampling: list[int] = None,
+    ) -> Tensor:
+        return mat
+
+    def _jac_mat_prod(
+        self,
+        module: SumModule,
+        g_inp: tuple[Tensor],
+        g_out: tuple[Tensor],
+        mat: Tensor,
+        subsampling: list[int] = None,
     ) -> Tensor:
         return mat
