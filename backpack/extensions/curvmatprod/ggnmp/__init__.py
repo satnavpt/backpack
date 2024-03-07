@@ -18,6 +18,12 @@ from torch.nn import (
     Sigmoid,
     Tanh,
     ZeroPad2d,
+    AdaptiveAvgPool1d,
+    AdaptiveAvgPool2d,
+    AdaptiveAvgPool3d,
+    BatchNorm1d,
+    BatchNorm2d,
+    BatchNorm3d,
 )
 
 from backpack.extensions.secondorder.base import SecondOrderBackpropExtension
@@ -67,6 +73,12 @@ class GGNMP(SecondOrderBackpropExtension):
                 Tanh: activations.GGNMPTanh(),
                 BatchNorm1d: batchnorm1d.GGNMPBatchNorm1d(),
                 SumModule: custom_module.GGNMPSumModule(),
+                AdaptiveAvgPool1d: pooling.GGNMPAdaptiveAvgPoolNd(1),
+                AdaptiveAvgPool2d: pooling.GGNMPAdaptiveAvgPoolNd(2),
+                AdaptiveAvgPool3d: pooling.GGNMPAdaptiveAvgPoolNd(3),
+                BatchNorm1d: custom_module.GGNMPBatchNormNd(),
+                BatchNorm2d: custom_module.GGNMPBatchNormNd(),
+                BatchNorm3d: custom_module.GGNMPBatchNormNd(),
             },
         )
 
