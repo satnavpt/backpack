@@ -9,45 +9,45 @@ from torch import Tensor
 class HBPBaseModule(ModuleExtension):
     def __init__(self, derivatives, params=None, sum_batch=False):
         self.derivatives = derivatives
-        if params is not None:
-            for param in params:
-                if not hasattr(self, param):
-                    setattr(self, param, self._make_param_method(param, sum_batch))
+        # if params is not None:
+        #     for param in params:
+        #         if not hasattr(self, param):
+        #             setattr(self, param, self._make_param_method(param, sum_batch))
         super().__init__(params=params)
 
-    def _make_param_method(
-        self, param_str: str, sum_batch: bool
-    ) -> Callable[
-        [ModuleExtension, Module, tuple[Tensor], tuple[Tensor], Tensor], Tensor
-    ]:
-        def _param(
-            ext: ModuleExtension,
-            module: Module,
-            grad_inp: tuple[Tensor],
-            grad_out: tuple[Tensor],
-            backproped: Tensor,
-        ) -> Tensor:
-            """Returns diagonal of GGN.
+    # def _make_param_method(
+    #     self, param_str: str, sum_batch: bool
+    # ) -> Callable[
+    #     [ModuleExtension, Module, tuple[Tensor], tuple[Tensor], Tensor], Tensor
+    # ]:
+    #     def _param(
+    #         ext: ModuleExtension,
+    #         module: Module,
+    #         grad_inp: tuple[Tensor],
+    #         grad_out: tuple[Tensor],
+    #         backproped: Tensor,
+    #     ) -> Tensor:
+    #         """Returns diagonal of GGN.
 
-            Args:
-                ext: extension
-                module: module through which to backpropagate
-                grad_inp: input gradients
-                grad_out: output gradients
-                backproped: backpropagated information
+    #         Args:
+    #             ext: extension
+    #             module: module through which to backpropagate
+    #             grad_inp: input gradients
+    #             grad_out: output gradients
+    #             backproped: backpropagated information
 
-            Returns:
-                    diagonal
-            """
-            axis: tuple[int] = (0, 1) if sum_batch else (0,)
-            return (
-                self.derivatives.param_mjp(
-                    param_str, module, grad_inp, grad_out, backproped, sum_batch=False
-                )
-                ** 2
-            ).sum(axis=axis)
+    #         Returns:
+    #                 diagonal
+    #         """
+    #         axis: tuple[int] = (0, 1) if sum_batch else (0,)
+    #         return (
+    #             self.derivatives.param_mjp(
+    #                 param_str, module, grad_inp, grad_out, backproped, sum_batch=False
+    #             )
+    #             ** 2
+    #         ).sum(axis=axis)
 
-        return _param
+    #     return _param
 
     def backpropagate(self, ext, module, g_inp, g_out, backproped):
         bp_strategy = ext.get_backprop_strategy()
