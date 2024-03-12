@@ -41,9 +41,8 @@ class GGNMPBatchNormNd(GGNMPBase):
             """Matrix-vector product with the GGN matrix w.r.t. the 'weight' parameter."""
             result = self.derivatives._weight_jac_mat_prod(module, g_inp, g_out, vector)
             result = h_out_prod(result)
-            result = self.derivatives._weight_jac_t_mat_prod(
-                module, g_inp, g_out, result
-            )
+            result = self.derivatives.param_mjp("weight", module, g_inp, g_out, result)
+
             return result
 
         return weight_ggnmp
@@ -56,7 +55,8 @@ class GGNMPBatchNormNd(GGNMPBase):
             """Matrix-vector product with the GGN matrix w.r.t. the 'bias' parameter."""
             result = self.derivatives._bias_jac_mat_prod(module, g_inp, g_out, vector)
             result = h_out_prod(result)
-            result = self.derivatives._bias_jac_t_mat_prod(module, g_inp, g_out, result)
+            result = self.derivatives.param_mjp("bias", module, g_inp, g_out, result)
+
             return result
 
         return bias_ggnmp
