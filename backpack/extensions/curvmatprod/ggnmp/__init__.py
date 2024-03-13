@@ -31,7 +31,7 @@ from backpack.custom_module.branching import SumModule
 
 from . import (
     activations,
-    batchnorm1d,
+    batchnorm_nd,
     conv2d,
     dropout,
     flatten,
@@ -71,14 +71,14 @@ class GGNMP(SecondOrderBackpropExtension):
                 ReLU: activations.GGNMPReLU(),
                 Sigmoid: activations.GGNMPSigmoid(),
                 Tanh: activations.GGNMPTanh(),
-                BatchNorm1d: batchnorm1d.GGNMPBatchNorm1d(),
+                # BatchNorm1d: batchnorm1d.GGNMPBatchNorm1d(),
                 SumModule: custom_module.GGNMPSumModule(),
                 AdaptiveAvgPool1d: pooling.GGNMPAdaptiveAvgPoolNd(1),
                 AdaptiveAvgPool2d: pooling.GGNMPAdaptiveAvgPoolNd(2),
                 AdaptiveAvgPool3d: pooling.GGNMPAdaptiveAvgPoolNd(3),
-                BatchNorm1d: custom_module.GGNMPBatchNormNd(),
-                BatchNorm2d: custom_module.GGNMPBatchNormNd(),
-                BatchNorm3d: custom_module.GGNMPBatchNormNd(),
+                BatchNorm1d: batchnorm_nd.GGNMPBatchNormNd(),
+                BatchNorm2d: batchnorm_nd.GGNMPBatchNormNd(),
+                BatchNorm3d: batchnorm_nd.GGNMPBatchNormNd(),
             },
         )
 

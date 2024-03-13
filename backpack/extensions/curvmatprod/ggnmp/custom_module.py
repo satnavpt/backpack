@@ -24,39 +24,3 @@ class GGNMPSumModule(GGNMPBase):
     def __init__(self):
         """Initialization."""
         super().__init__(derivatives=SumModuleDerivatives())
-
-
-class GGNMPBatchNormNd(GGNMPBase):
-    def __init__(self):
-        super().__init__(
-            derivatives=BatchNormNdDerivatives(),
-            params=["weight", "bias"],
-        )
-
-    def weight(self, ext, module, g_inp, g_out, backproped):
-        """Compute the GGNMP quantity for the 'weight' parameter."""
-        h_out_prod = backproped
-
-        def weight_ggnmp(vector):
-            """Matrix-vector product with the GGN matrix w.r.t. the 'weight' parameter."""
-            result = self.derivatives._weight_jac_mat_prod(module, g_inp, g_out, vector)
-            result = h_out_prod(result)
-            result = self.derivatives.param_mjp("weight", module, g_inp, g_out, result)
-
-            return result
-
-        return weight_ggnmp
-
-    def bias(self, ext, module, g_inp, g_out, backproped):
-        """Compute the GGNMP quantity for the 'bias' parameter."""
-        h_out_prod = backproped
-
-        def bias_ggnmp(vector):
-            """Matrix-vector product with the GGN matrix w.r.t. the 'bias' parameter."""
-            result = self.derivatives._bias_jac_mat_prod(module, g_inp, g_out, vector)
-            result = h_out_prod(result)
-            result = self.derivatives.param_mjp("bias", module, g_inp, g_out, result)
-
-            return result
-
-        return bias_ggnmp
